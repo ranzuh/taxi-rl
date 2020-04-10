@@ -1,6 +1,6 @@
 from .agent import Agent
 
-class RandomAgent(Agent):
+class QLearningAgent(Agent):
     
     def get_action(self, observation, reward, done):
         pass
