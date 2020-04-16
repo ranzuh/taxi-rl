@@ -23,36 +23,24 @@ class QLearningAgent(Agent):
         # initialize state, action and reward
         self.s = self.a = self.r = None
 
-    def get_action(self, next_state, reward, done):
-        # print(observation,reward,done)
+    def get_action(self, state):
+        # Epsilon-greedy action selection
+        if np.random.random_sample() < self.epsilon:
+            action = self.action_space.sample()
+        else:
+            action = np.argmax(self.Q[state])
 
-        Q, s, a, r = self.Q, self.s, self.a, self.r
+        return action
+
+    def update(self, state, action, next_state, reward):
+        Q = self.Q
+        s, a, s1, r = state, action, next_state, reward
         alpha, epsilon, discount = self.alpha, self.epsilon, self.discount
 
-        if done:
-            Q[s, None] = reward
+        Q[s, a] = Q[s, a] + alpha * (r + discount * (np.max(Q[s1])) - Q[s, a])
 
-        if s is not None:
-            Q[s, a] = Q[s, a] + alpha * (r + discount * (np.max(Q[next_state])) - Q[s, a])
-            # print(self.q[observation][self.a])
-
-        if done:
-            self.s = self.a = self.r = None
-        else:
-            self.s, self.r = next_state, reward
-
-            # Epsilon-greedy action selection
-            if np.random.random_sample() < epsilon:
-                self.a = self.action_space.sample()
-            else:
-                self.a = np.argmax(Q[next_state])
-
-        return self.a
-
-    def get_learned_action(self, observation):
-        # print(self.q[observation])
-        # print(np.argmax(self.q[observation]))
-        return np.argmax(self.Q[observation])
+    def get_policy(self, state):
+        return np.argmax(self.Q[state])
 
     def printq(self):
         print(self.Q)
