@@ -7,10 +7,8 @@ np.set_printoptions(threshold=np.inf)
 class QLearningAgent(Agent):
     # learning rate
     alpha = 0.1
-
     # how often random move
     epsilon = 0.1
-
     # discount future rewards
     discount = 0.6
 

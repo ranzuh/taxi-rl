@@ -2,67 +2,98 @@ import gym
 from agents.random_agent import RandomAgent
 from agents.qlearning_agent import QLearningAgent
 
-env = gym.make('Taxi-v3')
 
-total_penalties = 0
-episodes = 10001
-completions = 0
+def train(agent):
+    total_penalties = 0
+    episodes = 10001
+    completions = 0
 
-agent = RandomAgent(env.action_space)
-agent2 = QLearningAgent(env.action_space, env.observation_space)
+    timesteps_per_episode = []
+    rewards_per_episode = []
 
-for episode in range(episodes):
-    if episode % 100 == 0:
-        print(episode)
-    state = env.reset()
-    reward = 0
-    done = False
-    penalties = 0
-    # env.render()
-    while not done:
+    for episode in range(episodes):
+        if episode % 100 == 0:
+            print("Episode:", episode)
+
+        state = env.reset()
+        reward = 0
+        done = False
+        penalties = 0
+        total_reward = 0
+        timesteps = 0
         # env.render()
-        action = agent2.get_action(state)
-        next_state, reward, done, info = env.step(action)
-        agent2.update(state, action, next_state, reward)
+        while not done:
+            # env.render()
+            action = agent.get_action(state)
+            next_state, reward, done, info = env.step(action)
+            agent.update(state, action, next_state, reward)
 
-        state = next_state
+            state = next_state
+            total_reward += reward
 
-        if reward == -10:
-            penalties += 1
+            if reward == -10:
+                penalties += 1
 
-    total_penalties += penalties
+            if reward == 20:
+                completions += 1
 
-agent2.save_table()
+            timesteps += 1
 
-print()
-print("Average penalties over episode", total_penalties / episodes)
-print("Completions", completions)
+        total_penalties += penalties
 
-total_penalties = 0
-episodes = 1
-completions = 0
+        if episode % 100 == 0:
+            rewards_per_episode.append(total_reward)
+            timesteps_per_episode.append(timesteps)
 
-for episode in range(episodes):
-    state = env.reset()
-    reward = 0
-    done = False
-    penalties = 0
-    env.render()
-    while not done:
-        env.render()
-        import sys
-        sys.stdout.flush()
-        action = agent2.get_policy(state)
-        next_state, reward, done, info = env.step(action)
+    print()
+    print("Training complete after", episodes, "episodes")
+    print("Average penalties over episode", total_penalties / episodes)
+    print("Completions", completions)
+    print()
 
-        if reward == -10:
-            penalties += 1
 
-        state = next_state
-    total_penalties += penalties
+def evaluate(agent):
+    total_penalties = 0
+    episodes = 100
+    completions = 0
 
-print()
-print("Average penalties over episode", total_penalties / episodes)
-print("Completions", completions)
+    for episode in range(episodes):
+        state = env.reset()
+        reward = 0
+        done = False
+        penalties = 0
+        # env.render()
+        while not done:
+            action = agent.get_policy(state)
+            next_state, reward, done, info = env.step(action)
 
-# agent2.printq()
+            state = next_state
+
+            if reward == -10:
+                penalties += 1
+
+            if reward == 20:
+                completions += 1
+
+            # render_frame()
+
+        total_penalties += penalties
+
+    print()
+    print("Evaluated agent for", episodes, "episodes")
+    print("Average penalties over episode", total_penalties / episodes)
+    print("Completions", completions)
+    print()
+
+
+if __name__ == '__main__':
+    env = gym.make('Taxi-v3')
+    agent = QLearningAgent(env.action_space, env.observation_space)
+    train(agent)
+    print("Q-learning agent")
+    evaluate(agent)
+
+
+    print("Random agent")
+    rand_agent = RandomAgent(env.action_space)
+    evaluate(rand_agent)
