@@ -31,6 +31,7 @@ class QLearningAgent(Agent):
         return action
 
     def update(self, state, action, next_state, reward):
+        # update Q-values when taking action in state leading to next_state with reward
         Q = self.Q
         s, a, s1, r = state, action, next_state, reward
         alpha, epsilon, discount = self.alpha, self.epsilon, self.discount
