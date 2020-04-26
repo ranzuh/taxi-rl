@@ -1,3 +1,5 @@
+image: python:latest
+
 build:
     script:
-        - python main.py
+       - python main.py
