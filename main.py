@@ -1,11 +1,11 @@
 import gym
 from agents.random_agent import RandomAgent
 from agents.qlearning_agent import QLearningAgent
+import numpy as np
 
 
-def train(agent):
+def train(env, agent, episodes=10001):
     total_penalties = 0
-    episodes = 10001
     completions = 0
 
     timesteps_per_episode = []
@@ -52,22 +52,31 @@ def train(agent):
     print()
 
 
-def evaluate(agent):
+def evaluate(env, agent, episodes=100):
     total_penalties = 0
-    episodes = 100
     completions = 0
+
+    # these are for statistics
+    rewards_per_episode = []
+    timesteps_per_episode = []
+    penalties_per_episode = []
 
     for episode in range(episodes):
         state = env.reset()
         reward = 0
         done = False
         penalties = 0
+        total_reward = 0
+        timesteps = 0
         # env.render()
         while not done:
             action = agent.get_policy(state)
             next_state, reward, done, info = env.step(action)
 
             state = next_state
+
+            total_reward += reward
+            timesteps += 1
 
             if reward == -10:
                 penalties += 1
@@ -77,23 +86,26 @@ def evaluate(agent):
 
             # render_frame()
 
-        total_penalties += penalties
+        penalties_per_episode.append(penalties)
+        rewards_per_episode.append(total_reward)
+        timesteps_per_episode.append(timesteps)
 
-    print()
-    print("Evaluated agent for", episodes, "episodes")
-    print("Average penalties over episode", total_penalties / episodes)
-    print("Completions", completions)
-    print()
+    # print()
+    # print("Evaluated agent for", episodes, "episodes")
+    # print("Average penalties over episode", total_penalties / episodes)
+    # print("Completions", completions)
+    # print()
+
+    return np.mean(rewards_per_episode), np.mean(penalties_per_episode), np.mean(timesteps_per_episode)
 
 
 if __name__ == '__main__':
     env = gym.make('Taxi-v3')
     agent = QLearningAgent(env.action_space, env.observation_space)
-    train(agent)
+    train(env, agent, 10001)
     print("Q-learning agent")
-    evaluate(agent)
-
+    evaluate(env, agent, 100)
 
     print("Random agent")
     rand_agent = RandomAgent(env.action_space)
-    evaluate(rand_agent)
+    evaluate(env, rand_agent, 100)

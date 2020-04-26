@@ -5,3 +5,6 @@ class Agent:
 
     def get_action(self, state):
         pass
+
+    def get_policy(self, state):
+        pass
