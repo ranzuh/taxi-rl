@@ -38,3 +38,9 @@ luomista varten. Tämän saa avattua Jupyter Notebook nimisellä ohjelmalla.
 pip install -r requirements.txt
 python main.py
 ```
+
+# Video
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=4miwRVk0tzs
+" target="_blank"><img src="http://img.youtube.com/vi/4miwRVk0tzs/0.jpg" 
+alt="Q learning video" width="240" height="180" border="10" /></a>
