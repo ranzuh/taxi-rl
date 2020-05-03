@@ -1,5 +1,7 @@
 # Vahvistusoppimista OpenAI Gym ympäristössä
 
+Projektin tarkoituksena oli luoda oppiva tekoälyagentti johonkin ympäristöön. Algoritmiksi valitsin Q-learningin ja ympäristöksi OpenAI Gym Taxi-v3 ympäristön. Ympäristössä on tavoitteena viedä asiakas määränpäähän liikuttamalla taksia. Asiakkaan ja määränpään sijainti vaihtelevat satunnaisesti eri pelikeroilla.
+
 *  Taksiympäristö Taxi-V3 https://gym.openai.com/envs/Taxi-v3/
 *  Random ja Q-learning agentit
 *  Palkkioiden ja rangaistuksien vertailu graafisesti
